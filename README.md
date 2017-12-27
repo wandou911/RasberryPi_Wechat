@@ -1,13 +1,4 @@
 # RasberryPi_Wechat
-配置内网穿透
-
-[配置微信公众号](https://github.com/mcdona1d/Wechat-Python-Template)
-
-第一步：登陆微信公众平台：https://mp.weixin.qq.com
-
-
-
-
 
 一个以微信为终端的好玩的小东西
 
@@ -19,7 +10,7 @@
 
 运行截图
 
-需要用到的所有硬件
+# 需要用到的所有硬件
 
 路由器
 
@@ -31,7 +22,6 @@
 
 支持ouv的摄像头（罗技C170）
 
-花生棒及电源（或用花生壳内网版代替）
 
 乐高积木（小颗粒）
 
@@ -51,7 +41,7 @@
 
 GPIO连接线若干
 
-需要安装的所有软件
+# 需要安装的所有软件
 
 Windows或者Mac端
 
@@ -71,94 +61,15 @@ mjpg-streamer
 
 RPI.GPIO
 
-此程序的全部源码
+# 此程序的全部源码
 
 源码地址： https://github.com/329703622/wechatpi
 
-配置过程
+# 配置过程
 
-初始化树莓派
+# 1 初始化树莓派
 
-使用Putty或者其他终端登陆树莓派
-```
-Username：pi
-Password：raspberry
-```
-获取root权限
-```
-sudo passwd root
-```
-（需要输入两次你想设置的root密码）
-```
-sudo passwd --unlock root
-```
-设置完成后重启Putty，以root身份登陆
-
-释放空间及设置时区
-
-以root身份登录后会自动弹出raspi-config设置工具，也可直接输入raspi-config调出
-
-执行第一项，一直选择ok即可
-
-选择第四项，然后选择第二项，进入时区设置
-
-分别选择Asia——Shanghai，确定，即可改为+8时区
-
-
-设置静态ip
-```
-sudo nano /etc/network/interfaces
-```
-把这一行
-```
-iface eth0 inet dhcp
-```
-替换为
-```
-iface eth0 inet static 
-address 192.168.1.101 
-netmask 255.255.255.0 
-gateway 192.168.1.1 
-dns-nameservers 114.114.114.114
-```
-修改resolv.config文件
-```
-sudo nano /etc/resolv.conf
-```
-修改为
-```
-nameserver 114.114.114.114
-```
-否则不能解析域名
-
-更新软件源
-```
-nano /etc/apt/sources.list
-```
-删除原文件所有内容，用以下内容取代：
-```
-deb http://mirror.sysu.edu.cn/raspbian/raspbian/ wheezy main contrib non-free 
-
-deb-src http://mirror.sysu.edu.cn/raspbian/raspbian/ wheezy main contrib non-free
-```
-
-Ps：树莓派官方提供的软件源列表 http://www.raspbian.org/RaspbianMirrors 
-
-Ps2：国内的几个软件源
-```
-中山大学 http://mirror.sysu.edu.cn/raspbian/raspbian/ 
-
-中国科学技术大学 http://mirrors.ustc.edu.cn/raspbian/raspbian/
-
-清华大学http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ 
-
-华中科技大学 http://mirrors.hustunique.com/raspbian/raspbian/ 
-
-大连东软信息学院源（北方用户） http://mirrors.neusoft.edu.cn/raspbian/raspbian/ 
-
-重庆大学源（中西部用户）http://mirrors.cqu.edu.cn/Raspbian/raspbian/
-```
-更新缓存并升级软件
+### 更新缓存并升级软件
 ```
 sudo apt-get update && apt-get upgrade
 ```
@@ -206,35 +117,132 @@ cd mjpg-streamer-code-182/mjpg-streamer
 make USE_LIBV4L2=true clean all
 make DESTDIR=/usr install
 ```
-####配置路由器 在路由器设置界面内，为树莓派设置好静态ip，或者在树莓派端设置静态ip，记住此ip
 
-####配置内网穿透 花生棒/壳或者frp
+# 2 配置内网穿透 frp
 
-如果网络环境拥有公网ip，则可以在路由器上设置ddns（ddns可以搜索其他相关文章），如果不具备此环境，则需要花生壳内网版（软件）或花生棒（硬件）来实现公网地址从而与微信公众平台对接。 
+## 2.1 安装frps 服务端
 
 
-####配置apache2 因为我的80端口需要被微信公众平台占用，所以我不能让网页走80端口，需要更改端口
+下载一键安装包 安装
+```
+wget --no-check-certificate https://raw.githubusercontent.com/clangcn/onekey-install-shell/master/frps/install-frps.sh -O ./install-frps.sh
+chmod 700 ./install-frps.sh
+./install-frps.sh install
+```
+安装过程中 可以一直回车按默认选项 直到安装成功 安装安装成功截图：
 
-nano /etc/apache2/ports.conf
-将Listen 80改为Listen 8080
+[安装成功截图](https://images2017.cnblogs.com/blog/1044995/201712/1044995-20171226155743729-1396171587.png)
 
-####调试摄像头 运行考入树莓派中的Git包目录中testcam文件夹中的“stream.sh”文件：
+启动frps：
+```
+frps start
+```
+备注:frps 常用命令：启动（frps start），停止（frps stop）配置文件（frps config）
 
+## 2.2 安装frpc 客户端 
+
+下载编译好的arm版本 
+
+```
+wget https://github.com/fatedier/frp/releases/download/v0.14.1/frp_0.14.1_linux_arm.tar.gz
+tar zxvf frp_0.14.1_linux_arm.tar.gz #解压
+cd frp_0.14.1_linux_arm
+vi frpc.ini
+```
+
+修改 frpc.ini 文件，假设 frps 所在的服务器的 IP 为 x.x.x.x，
+
+local_port:8080 为本地机器 web 服务对应的端口,绑定自定义域名 raspberry.yourdomain.com:
+
+local_port:80   为本地机器 web 服务对应的端口,绑定自定义域名 weixin.yourdomain.com:
+```
+# frpc.ini
+[common]
+server_addr = x.x.x.x
+server_port = 5443 #和服务端对应
+
+[web_raspberry_web]#名称不能重复
+type = http
+local_port = 8080#端口号 对应本机web服务器端口
+custom_domains = raspberry.yourdomain.com
+
+[web_raspberry_weixin]#名称不能重复
+type = http
+local_port = 80#端口号 对应本机web服务器端口
+custom_domains = weixin.yourdomain.com#可以配置多个子域名
+```
+
+# 3 申请域名并解析
+
+将 yourdomain.com 的域名 A 记录解析到 IP x.x.x.x
+
+# 4 配置 Apache 因为我的80端口需要被微信公众平台占用，所以我不能让网页走80端口，需要更改端口
+
+
+修改Apache2端口号为：8080
+```
+cd /etc/apache2
+sudo vi ports.conf
+```
+
+将 Listen 80 改为Listen 8080
+```
+:wq
+```
+保存退出
+
+关闭Apache
+```
+/etc/init.d/apache2 stop
+```
+启动Apache
+```
+/etc/init.d/apache2 start
+```
+
+此时打开浏览器输入http://raspberry.yourdomain.com:8080 
+
+如果看到it works 说明Apache配置成功
+
+
+# 5 部署web页面
+
+编辑Git包中的文件中的index.html，在你的树莓派ip处改为树莓派的ip地址
+```
+cd RaspberryWechatPi
+vi index.html
+```
+将你的树莓派ip处改为raspberrypi.local
+```
+:wq
+```
+
+将index.html上传到/var/www目录下了，替换之前的index.html
+```
+sudo cp index.html /var/www/html
+```
+
+在浏览器中输入 http://raspberry.yourdomain.com:8080/ 尝试一下能否访问 如果成功出现页面，则web页面部署成功 
+
+备注：apache2 网页存放路径 /var/www/html
+
+
+# 6 调试摄像头 
+
+运行考入树莓派中的Git包目录中testcam文件夹中的“stream.sh”文件：
+
+```
 sudo chmod +x stream.sh（先增加执行权限，才能用./filename 来运行）
 sudo ./stream.sh
-Alt text
+```
 
 在运行程序时，如果发生错误，可能是之前由于运行过，进程仍然在工作，导致没法再运行，可以先运行ps -A，查看运行中的进程和进程ID号，再使用kill id号杀掉进程
 
-Alt text
-
-在pc上运行Git包中的testcam.html文件，右击编辑index.html，将树莓派ip换成你的树莓派固定ip，保存，双击打开testcam.html
-
-Alt text
+在pc上运行Git包中的testcam.html文件，右击编辑index.html，将树莓派ip换成raspberrypi.local，保存，双击打开testcam.html
 
 看到摄像头输出图像，说明摄像头工作正常。
 
-###申请及配置公众平台测试账号
+# 7 申请及配置公众平台测试账号
 
 打开页面 http://mp.weixin.qq.com/wiki/home/index.html 申请一个公共平台的测试账号
 
@@ -242,19 +250,28 @@ Alt text
 
 申请成功后，进入管理界面
 
-在接口配置信息的URL处输入你在花生壳申请的域名，后面加上/weixin Token中填上你自己喜欢的一串字母，完成后不要点击提交 （此时可以先下载我之前的微信公众平台基础模板进行对接，可以对接成功后在进行接下来的工作，以测试网络环境是否配置完毕 文章地址：http://blog.csdn.net/u010027419/article/details/40835963）
+在接口配置信息的URL处输入你在frpc.ini 配置的子域名：weixin.yourdomain.com，后面加上/weixin Token中填上你自己喜欢的一串字母，完成后不要点击提交 （此时可以先下载我之前的微信公众平台基础模板进行对接，可以对接成功后在进行接下来的工作，以测试网络环境是否配置完毕 文章地址：http://blog.csdn.net/u010027419/article/details/40835963）
 
-###下载及配置主程序
+测试网络环境配置
+
+```
+cd testWeixin
+chmod +x testWeixin.py
+python testWeixin.py 80
+```
+
+此时在页面点击提交，如果显示配置成功，即可继续，如果配置失败，请检查步骤2 frp 是否配置成功
+
+# 8 下载及配置主程序
 
 在此Github中下载完整代码包，解压后进行编辑 （Git：https://github.com/329703622/wechatpi）
 
 填入刚才自己设置的的Token以及测试号提供的appID和appsecret（yeekey稍后提到）
 
+
 填入自己的所有传感器对应的GPIO接口 （传感器调试参考此博客（或附录）其他文章）
 
-设置完毕之后使用WinSCP放入树莓派文件目录
 
-使用Putty（终端）登录树莓派
 
 在刚在文件所在目录执行chmod +x start.sh 增加执行权限
 
@@ -267,15 +284,8 @@ Alt text
 
 此时在微信公众平台测试账号的网页上点击提交，如果提示成功，则整套系统基本配置成功
 
-部署web页面
 
-编辑Git包中的文件中的index.html，在你的树莓派ip处改为树莓派的ip地址
-
-将index.html上传到/var/www目录下了，替换之前的index.html
-
-在浏览器中输入 http://你的树莓派局域网ip:8080/尝试一下能否访问 如果成功出现页面，则web页面部署成功 
-
-设置微信公众账号菜单
+## 设置微信公众账号菜单
 
 在微信公众平台管理测试账号下方选择获取access token
 
@@ -318,3 +328,4 @@ Ps2：参数说明
 在程序中填入自己的设备id以及yeekey，并将附近自己的yeelink页面改为自己的页面
 
 
+[参考链接：配置微信公众号模板](https://github.com/mcdona1d/Wechat-Python-Template)
