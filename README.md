@@ -67,7 +67,7 @@ RPI.GPIO
 
 # 配置过程
 
-# 1 初始化树莓派
+## 1 初始化树莓派
 
 ### 更新缓存并升级软件
 ```
@@ -118,9 +118,9 @@ make USE_LIBV4L2=true clean all
 make DESTDIR=/usr install
 ```
 
-# 2 配置内网穿透 frp
+## 2 配置内网穿透 frp
 
-## 2.1 安装frps 服务端
+### 2.1 安装frps 服务端
 
 
 下载一键安装包 安装
@@ -131,7 +131,7 @@ chmod 700 ./install-frps.sh
 ```
 安装过程中 可以一直回车按默认选项 直到安装成功 安装安装成功截图：
 
-[安装成功截图](https://images2017.cnblogs.com/blog/1044995/201712/1044995-20171226155743729-1396171587.png)
+![安装成功截图](https://images2017.cnblogs.com/blog/1044995/201712/1044995-20171226155743729-1396171587.png)
 
 启动frps：
 ```
@@ -139,7 +139,7 @@ frps start
 ```
 备注:frps 常用命令：启动（frps start），停止（frps stop）配置文件（frps config）
 
-## 2.2 安装frpc 客户端 
+### 2.2 安装frpc 客户端 
 
 下载编译好的arm版本 
 
@@ -172,11 +172,13 @@ local_port = 80#端口号 对应本机web服务器端口
 custom_domains = weixin.yourdomain.com#可以配置多个子域名
 ```
 
-# 3 申请域名并解析
+## 3 申请域名并解析
 
 将 yourdomain.com 的域名 A 记录解析到 IP x.x.x.x
 
-# 4 配置 Apache 因为我的80端口需要被微信公众平台占用，所以我不能让网页走80端口，需要更改端口
+## 4 配置 Apache 
+
+#### 因为我的80端口需要被微信公众平台占用，所以我不能让网页走80端口，需要更改端口
 
 
 修改Apache2端口号为：8080
@@ -205,7 +207,7 @@ sudo vi ports.conf
 如果看到it works 说明Apache配置成功
 
 
-# 5 部署web页面
+## 5 部署web页面
 
 编辑Git包中的文件中的index.html，在你的树莓派ip处改为树莓派的ip地址
 ```
@@ -227,7 +229,7 @@ sudo cp index.html /var/www/html
 备注：apache2 网页存放路径 /var/www/html
 
 
-# 6 调试摄像头 
+## 6 调试摄像头 
 
 运行考入树莓派中的Git包目录中testcam文件夹中的“stream.sh”文件：
 
@@ -242,7 +244,7 @@ sudo ./stream.sh
 
 看到摄像头输出图像，说明摄像头工作正常。
 
-# 7 申请及配置公众平台测试账号
+## 7 申请及配置公众平台测试账号
 
 打开页面 http://mp.weixin.qq.com/wiki/home/index.html 申请一个公共平台的测试账号
 
@@ -262,7 +264,7 @@ python testWeixin.py 80
 
 此时在页面点击提交，如果显示配置成功，即可继续，如果配置失败，请检查步骤2 frp 是否配置成功
 
-# 8 下载及配置主程序
+## 8 下载及配置主程序
 
 在此Github中下载完整代码包，解压后进行编辑 （Git：https://github.com/329703622/wechatpi）
 
@@ -285,7 +287,7 @@ python testWeixin.py 80
 此时在微信公众平台测试账号的网页上点击提交，如果提示成功，则整套系统基本配置成功
 
 
-## 设置微信公众账号菜单
+## 9 设置微信公众账号菜单
 
 在微信公众平台管理测试账号下方选择获取access token
 
@@ -315,7 +317,7 @@ Ps2：参数说明
 |key|	click等点击类型必须|	菜单KEY值，用于消息接口推送，不超过128字节| 
 |url	|view类型必须|	网页链接，用户点击菜单可打开链接，不超过256字节|
 
-申请Yeelink物联网服务
+## 10 申请Yeelink物联网服务
 
 打开 http://www.yeelink.net/ 注册账号
 
