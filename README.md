@@ -122,7 +122,7 @@ make DESTDIR=/usr install
 
 ### 2.1 安装frps 服务端（vps主机）
 
-需要购买vps主机 [搬瓦工](https://bwh1.net/aff.php?aff=19935） 或者  [vultr](https://www.vultr.com/?ref=7236384)
+需要购买vps主机  [搬瓦工](https://bwh1.net/aff.php?aff=19935) 或者   [vultr](https://www.vultr.com/?ref=7236384)
 
 
 下载一键安装包 安装
@@ -161,7 +161,10 @@ local_port:80   为本地机器 web 服务对应的端口,绑定自定义域名 
 # frpc.ini
 [common]
 server_addr = x.x.x.x
-server_port = 5443 #和服务端对应
+#和服务端对应
+server_port = 5443 
+#和服务端对应wcnk53kvgNm7cdt8
+privilege_token = 你的服务端token
 
 [ssh]
 type = tcp
@@ -169,16 +172,28 @@ local_ip = 127.0.0.1
 local_port = 22
 remote_port = 6000
 
-[web_raspberry_web]#名称不能重复
+#名称不能重复
+[web_raspberry_web]
 type = http
-local_port = 8080#端口号 对应本机web服务器端口
+#端口号 对应本机web服务器端口
+local_port = 8080
+#可以配置多个子域名
 custom_domains = raspberry.yourdomain.com
 
-[web_raspberry_weixin]#名称不能重复
+[web_raspberry_weixin]
 type = http
-local_port = 80#端口号 对应本机web服务器端口
-custom_domains = weixin.yourdomain.com#可以配置多个子域名
+local_port = 80
+custom_domains = weixin.yourdomain.com
 ```
+修改好frpc.ini 后启动frpc客户端 如果想在后台运行 可在命令后加 ./frpc -c frpc.ini &
+
+```
+./frpc -c frpc.ini 
+```
+如下图，表示启动成功
+
+![启动成功](https://images2017.cnblogs.com/blog/1044995/201712/1044995-20171222170044318-162684052.png)
+
 
 ## 3 申请域名并解析
 
@@ -205,11 +220,11 @@ sudo vi ports.conf
 
 关闭Apache
 ```
-/etc/init.d/apache2 stop
+sudo /etc/init.d/apache2 stop
 ```
 启动Apache
 ```
-/etc/init.d/apache2 start
+sudo /etc/init.d/apache2 start
 ```
 
 此时打开浏览器输入http://raspberry.yourdomain.com:8080 
@@ -234,7 +249,7 @@ vi index.html
 sudo cp index.html /var/www/html
 ```
 
-在浏览器中输入 http://raspberry.yourdomain.com:8080/ 尝试一下能否访问 如果成功出现页面，则web页面部署成功 
+在浏览器中输入 http://raspberry.yourdomain.com 尝试一下能否访问 如果成功出现 树莓派实时监控 页面，则web页面部署成功 
 
 备注：apache2 网页存放路径 /var/www/html
 
@@ -253,6 +268,11 @@ sudo ./stream.sh
 ```
 
 在运行程序时，如果发生错误，可能是之前由于运行过，进程仍然在工作，导致没法再运行，可以先运行ps -A，查看运行中的进程和进程ID号，再使用kill id号杀掉进程
+
+```
+sudo kill 进程号
+```
+
 
 在pc上运行Git包中的testcam.html文件，右击编辑index.html，将树莓派ip换成树莓派的ip地址或者raspberrypi.local，保存，双击打开testcam.html
 
@@ -273,10 +293,12 @@ sudo ./stream.sh
 ```
 cd ~/RasberryPi_Wechat/testweixin
 chmod +x testweixin.py
-python testweixin.py 80
+sudo python testweixin.py 80
 ```
 
-此时在页面点击提交，如果显示配置成功，即可继续下面的操作，如果配置失败，请检查 步骤2 frp 是否配置成功
+此时在页面点击提交，如果显示配置成功，此时打开微信，扫描关注你的微信公众平台测试账号，关注成功后，在文本框输入文字，可以收到回复
+
+如果配置失败，请检查 步骤2 frp 是否配置成功
 
 ![微信公众号](https://images2018.cnblogs.com/blog/1044995/201712/1044995-20171225182153603-951671329.png)
 
