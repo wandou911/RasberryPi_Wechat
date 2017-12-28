@@ -278,7 +278,7 @@ python testweixin.py 80
 
 进入RasberryPi_Wechat目录，修改index.py文件
 
-``
+```
 cd ~/RasberryPi_Wechat
 vi index.py
 ```
@@ -291,6 +291,7 @@ vi index.py
 
 ```
 :wq
+
 ```
 
 在刚在文件所在目录执行chmod +x start.sh 增加执行权限
