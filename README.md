@@ -320,7 +320,6 @@ chmod +x start.sh
 
 下方蓝色的access_token就是一会提交菜单要用到的access_token，复制此token
 
-![获取access_token](https://images2017.cnblogs.com/blog/1044995/201712/1044995-20171227154052269-505421259.png)
 
 分别在接口类型选择自定义菜单和在接口列表选择自定义菜单创建接口。进入如下界面，填入刚才的access_token（access_token具有一定的时效性，时间过长后需重新获取）
 在body中填入Git包中的menu.txt内的内容，点击检查问题
