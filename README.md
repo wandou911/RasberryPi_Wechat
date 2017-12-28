@@ -63,7 +63,7 @@ RPI.GPIO
 
 # 此程序的全部源码
 
-源码地址： https://github.com/329703622/wechatpi
+源码地址： https://github.com/wandou911/RasberryPi_Wechat
 
 # 配置过程
 
@@ -120,9 +120,9 @@ make DESTDIR=/usr install
 
 ## 2 配置内网穿透 frp 
 
-### 2.1 安装frps 服务端（vps主机或者其他有公网ip的主机）
+### 2.1 安装frps 服务端（vps主机）
 
-需要购买vps主机 [搬瓦工]https://bwh1.net/aff.php?aff=19935 [vultr](https://www.vultr.com/?ref=7236384)
+需要购买vps主机 [搬瓦工](https://bwh1.net/aff.php?aff=19935） 或者  [vultr](https://www.vultr.com/?ref=7236384)
 
 
 下载一键安装包 安装
@@ -141,7 +141,7 @@ frps start
 ```
 备注:frps 常用命令：启动（frps start），停止（frps stop）配置文件（frps config）
 
-### 2.2 安装frpc 客户端（树莓派客户端）
+### 2.2 安装frpc 客户端（树莓派）
 
 下载编译好的arm版本 
 
