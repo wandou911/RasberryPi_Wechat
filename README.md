@@ -163,6 +163,12 @@ local_port:80   为本地机器 web 服务对应的端口,绑定自定义域名 
 server_addr = x.x.x.x
 server_port = 5443 #和服务端对应
 
+[ssh]
+type = tcp
+local_ip = 127.0.0.1
+local_port = 22
+remote_port = 6000
+
 [web_raspberry_web]#名称不能重复
 type = http
 local_port = 8080#端口号 对应本机web服务器端口
