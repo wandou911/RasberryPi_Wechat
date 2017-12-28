@@ -118,9 +118,11 @@ make USE_LIBV4L2=true clean all
 make DESTDIR=/usr install
 ```
 
-## 2 配置内网穿透 frp
+## 2 配置内网穿透 frp 
 
-### 2.1 安装frps 服务端
+### 2.1 安装frps 服务端（vps主机或者其他有公网ip的主机）
+
+需要购买vps主机 [搬瓦工]https://bwh1.net/aff.php?aff=19935 [vultr](https://www.vultr.com/?ref=7236384)
 
 
 下载一键安装包 安装
@@ -139,7 +141,7 @@ frps start
 ```
 备注:frps 常用命令：启动（frps start），停止（frps stop）配置文件（frps config）
 
-### 2.2 安装frpc 客户端 
+### 2.2 安装frpc 客户端（树莓派客户端）
 
 下载编译好的arm版本 
 
@@ -211,7 +213,7 @@ sudo vi ports.conf
 
 ## 5 部署web页面
 
-编辑Git包中的文件中的index.html，在你的树莓派ip处改为树莓派的ip地址
+编辑Git包中的文件中的index.html，在你的树莓派ip处改为树莓派的ip地址或者raspberrypi.local
 ```
 cd RaspberryWechatPi
 vi index.html
@@ -233,16 +235,20 @@ sudo cp index.html /var/www/html
 
 ## 6 调试摄像头 
 
-运行考入树莓派中的Git包目录中testcam文件夹中的“stream.sh”文件：
+在此Github中下载完整代码包，解压后进行编辑 （Git：https://github.com/wandou911/RasberryPi_Wechat）
+
+运行树莓派的Git包目录中testcam文件夹中的“stream.sh”文件：
 
 ```
+git clone https://github.com/wandou911/RasberryPi_Wechat
+cd RasberryPi_Wechat/testcam
 sudo chmod +x stream.sh（先增加执行权限，才能用./filename 来运行）
 sudo ./stream.sh
 ```
 
 在运行程序时，如果发生错误，可能是之前由于运行过，进程仍然在工作，导致没法再运行，可以先运行ps -A，查看运行中的进程和进程ID号，再使用kill id号杀掉进程
 
-在pc上运行Git包中的testcam.html文件，右击编辑index.html，将树莓派ip换成raspberrypi.local，保存，双击打开testcam.html
+在pc上运行Git包中的testcam.html文件，右击编辑index.html，将树莓派ip换成树莓派的ip地址或者raspberrypi.local，保存，双击打开testcam.html
 
 看到摄像头输出图像，说明摄像头工作正常。
 
@@ -254,35 +260,47 @@ sudo ./stream.sh
 
 申请成功后，进入管理界面
 
-在接口配置信息的URL处输入你在frpc.ini 配置的子域名：weixin.yourdomain.com，后面加上/weixin Token中填上你自己喜欢的一串字母，完成后不要点击提交 （此时可以先下载我之前的微信公众平台基础模板进行对接，可以对接成功后在进行接下来的工作，以测试网络环境是否配置完毕 文章地址：http://blog.csdn.net/u010027419/article/details/40835963）
+在接口配置信息的URL处输入你在步骤2.2 rpc.ini 配置的子域名：weixin.yourdomain.com，后面加上/weixin Token中填上你自己喜欢的一串字母，完成后不要点击提交 （此时可以用git代码包中的微信公众平台基础模板 testweixin 进行对接，可以对接成功后在进行接下来的工作，以测试网络环境是否配置完毕 
 
 测试网络环境配置
 
 ```
-cd testWeixin
-chmod +x testWeixin.py
-python testWeixin.py 80
+cd ~/RasberryPi_Wechat/testweixin
+chmod +x testweixin.py
+python testweixin.py 80
 ```
 
-此时在页面点击提交，如果显示配置成功，即可继续，如果配置失败，请检查步骤2 frp 是否配置成功
+此时在页面点击提交，如果显示配置成功，即可继续下面的操作，如果配置失败，请检查 步骤2 frp 是否配置成功
 
-## 8 下载及配置主程序
+![微信公众号](https://images2018.cnblogs.com/blog/1044995/201712/1044995-20171225182153603-951671329.png)
 
-在此Github中下载完整代码包，解压后进行编辑 （Git：https://github.com/329703622/wechatpi）
+## 8 配置主程序
+
+进入RasberryPi_Wechat目录，修改index.py文件
+
+``
+cd ~/RasberryPi_Wechat
+vi index.py
+```
 
 填入刚才自己设置的的Token以及测试号提供的appID和appsecret（yeekey稍后提到）
 
-
 填入自己的所有传感器对应的GPIO接口 （传感器调试参考此博客（或附录）其他文章）
 
+修改完成后保存退出
 
+```
+:wq
+```
 
 在刚在文件所在目录执行chmod +x start.sh 增加执行权限
 
 执行 
 ```
+chmod +x start.sh
 ./start.sh
 ```
+
 如果出现如图所示信息，则程序正确运行
 
 
@@ -301,10 +319,15 @@ python testWeixin.py 80
 
 下方蓝色的access_token就是一会提交菜单要用到的access_token，复制此token
 
+![获取access_token](https://images2017.cnblogs.com/blog/1044995/201712/1044995-20171227154052269-505421259.png)
+
 分别在接口类型选择自定义菜单和在接口列表选择自定义菜单创建接口。进入如下界面，填入刚才的access_token（access_token具有一定的时效性，时间过长后需重新获取）
 在body中填入Git包中的menu.txt内的内容，点击检查问题
 
 若显示Request successful即为菜单创建成功。
+
+![生成自定义菜单](https://images2017.cnblogs.com/blog/1044995/201712/1044995-20171227154408535-50975473.png)
+
 
 Ps：取消关注微信号重新关注即可直接查看效果。否则受限于微信限制，需要24小时后缓存刷新方可查看。
 
@@ -331,16 +354,15 @@ Ps2：参数说明
 
 在程序中填入自己的设备id以及yeekey，并将附近自己的yeelink页面改为自己的页面
 
+
+## 附录
+
 [参考链接：基于树莓派的智能家居控制平台 微信服务端](https://github.com/mcdona1d/RaspberryWechatPi)
 
-[参考链接：配置微信公众号模板](https://github.com/mcdona1d/Wechat-Python-Template)
+[参考链接：配置微信公众号](http://www.cnblogs.com/mnstar/p/8110655.html)
 
 [参考链接：域名解析](http://www.cnblogs.com/mnstar/p/8134994.html)
 
 [参考链接：frps内网穿透](http://www.cnblogs.com/mnstar/p/8085113.html)
 
-[参考链接：]()
 
-[参考链接：]()
-
-[参考链接：]()
