@@ -176,6 +176,8 @@ custom_domains = weixin.yourdomain.com#可以配置多个子域名
 
 将 yourdomain.com 的域名 A 记录解析到 IP x.x.x.x
 
+![域名解析](https://images2017.cnblogs.com/blog/1044995/201712/1044995-20171228115824113-354951591.png)
+
 ## 4 配置 Apache 
 
 #### 因为我的80端口需要被微信公众平台占用，所以我不能让网页走80端口，需要更改端口
@@ -329,5 +331,10 @@ Ps2：参数说明
 
 在程序中填入自己的设备id以及yeekey，并将附近自己的yeelink页面改为自己的页面
 
-
+[参考链接：基于树莓派的智能家居控制平台 微信服务端](https://github.com/mcdona1d/RaspberryWechatPi)
 [参考链接：配置微信公众号模板](https://github.com/mcdona1d/Wechat-Python-Template)
+[参考链接：域名解析](http://www.cnblogs.com/mnstar/p/8134994.html)
+[参考链接：frps内网穿透](http://www.cnblogs.com/mnstar/p/8085113.html)
+[参考链接：]()
+[参考链接：]()
+[参考链接：]()
