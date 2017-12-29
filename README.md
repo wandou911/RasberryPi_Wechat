@@ -1,5 +1,7 @@
 # RasberryPi_Wechat
 
+本文参考 [mcdona1d 基于树莓派的智能家居控制平台 微信服务端](https://github.com/mcdona1d/RaspberryWechatPi) 
+
 一个以微信为终端的好玩的小东西
 
 可以实现的功能
